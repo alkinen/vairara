@@ -1,30 +1,34 @@
 <?php
+defined('MAINPATH') OR exit('Прямой доступ к скрипту запрещен.');
+include(MAINPATH . 'config.php');
 
-//require "../config.php";
-class DB_CONNECTION extends DB_CONFIG
+class DB_CONN
 {
-    function checkDBconnection($dbconfig->DB_HOST, $DB_NAME, $DB_USER, $DB_PASSWORD)//Метод проверки подключения.
+
+
+    function checkDBconnection($db_host, $db_name, $db_user, $db_password, $db_charset)//Метод проверки подключения.
 {
     try {
         //Устанавливаем подключение к БД.
-        $conn = new PDO("mysql:host=DB_HOST;dbname=DB_NAME;charset=utf8", DB_USER, DB_PASS);
+        $conn = new PDO("mysql:host=$db_host;dbname=$db_name;charset=$db_charset", $db_user, $db_password);
         // Устанавливаем режим перехвата ошибок для PDO.
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         echo "Соединение с БД успешно.";
-    } catch (PDOException $e) {
+    } catch
+    (PDOException $e) {
         echo "Ошибка соединение с БД: " . $e->getMessage();
     }
     $conn = null; //Закрываем соединение с БД.
 }
 
-function createDB(DB_HOST, DB_NAME, $DB_USER, $DB_PASS)//Метод создания БД.
+    function createDB($db_host, $db_name, $db_user, $db_password, $db_charset)//Метод создания БД.
 {
     try {
         //Устанавливаем подключение к БД.
-        $conn = new PDO("mysql:host=DB_HOST;dbname=DB_NAME;charset=utf8", $DB_USER, $DB_PASS);
+        $conn = new PDO("mysql:host=$db_host;dbname=$db_name;charset=$db_charset", $db_user, $db_password);
         // Устанавливаем режим перехвата ошибок для PDO.
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        $sql = "CREATE DATABASE DB_NAME"; // Создаем БД с именем DB_NAME.
+        $sql = "CREATE DATABASE $db_name"; // Создаем БД с именем DB_NAME.
         // Используем exec(), без него не вернеться результат (result).
         $conn->exec($sql);
         echo "База данных успешно создана.<br>";
@@ -34,11 +38,12 @@ function createDB(DB_HOST, DB_NAME, $DB_USER, $DB_PASS)//Метод создан
     $conn = null;//Закрываем соединение с БД.
 }
 
-function createTables(DB_HOST, DB_NAME, $DB_USER, $DB_PASS)//Метод создания таблиц БД.
+
+    function createTables($db_host, $db_name, $db_user, $db_password, $db_charset)//Метод создания таблиц БД.
 {
     try {
         //Устанавливаем подключение к БД.
-        $conn = new PDO("mysql:host=DB_HOST;dbname=DB_NAME;charset=utf8", $DB_USER, $DB_PASS);
+        $conn = new PDO("mysql:host=$db_host;dbname=$db_name;charset=$db_charset", $db_user, $db_password);
         // Устанавливаем режим перехвата ошибок для PDO.
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         // SQL запрос для создания таблицы (users).
@@ -56,12 +61,11 @@ function createTables(DB_HOST, DB_NAME, $DB_USER, $DB_PASS)//Метод созд
         echo $sql . "<br>" . $e->getMessage();
     }
     $conn = null;//Закрываем соединение с БД.
-
 }
 
 /*  Вызовы методов  */
 
-//checkDBconnection(DB_HOST, DB_NAME, $DB_USER, $DB_PASS);//Вызов метода проверки подключения.
+//checkDBconnection($db_host, $db_name, $db_user, $db_password, $db_charset);//Вызов метода проверки подключения.
 //createDB(DB_HOST, DB_NAME, $DB_USER, $DB_PASS);//Вызов метода создания БД.
 //createTables(DB_HOST, DB_NAME, $DB_USER, $DB_PASS);//Вызов метода создания таблиц БД.
 //registrationInsert(DB_HOST, DB_NAME, $DB_USER, $DB_PASS, $TABLE_NAME, $TABLE_FIELDS, $TABLE_DATA);//Вызов метода добавления данных в таблицу(регистрация).

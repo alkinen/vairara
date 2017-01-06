@@ -52,19 +52,7 @@ class Mserver
 		$this->phone;
 		$this->pass;
     }
-    /* @param $response - ответ сервера
-     * @throws Exception - проверка кода ошибки */
-    private function check_errors($response)
-    {
-        print_r($response);
-        if (isset($response['meta']['print_r($response);code']) && 200 != $response['meta']['code'])
-        {//Проверяем соответсвует ли ошибка нашему списку errors_bad и ответу 200 (все ок)
-            $code = $response['meta']['code'];
-            if (isset($this->erros_bad[$code]))
-                throw new Exception($this->erros_bad[$code]);//Полученный код ошибки
-            else throw new Exception('Проблема с mserver, повторите запрос позже.');//Ошибка 5ХХ проблема с Mserver
-        }
-    }
+
     public function get_access_token() // TODO Метод получения токена для доступа к API п. 2.2.3
     {
         $fields = array
@@ -74,6 +62,7 @@ class Mserver
         $response = $this->requestPost($this->url, $fields); //Конектимся и передаем данные. Ответ возвращается в $response
         $this->access_token = $response['data']['access_token']; //Сохраняем полученный access_token
     }
+
     public function create_wallet($phone, $pass) //TODO Метод создания кошелька API п. 4.2.1
     {
         $fields = array
@@ -89,6 +78,7 @@ class Mserver
         //TODO заменить сессии на параметры $_SESSION['dev']['activation_code'] = $code;
         return $response; // Надо проверить "activation_code" или "security_code" в ответе
     }
+
     /* @param $phone - телефон (логин клиента)
      * @param $code - ответ сервера (код который прийдет на телефон клиента для активации)
      * @return mixed */
@@ -105,6 +95,7 @@ class Mserver
         $response = $this->requestPost($this->url_wallet_activate, $fields, $headers);
         return $response;
     }
+
     public function get_wallet($phone, $pass) //TODO Метод получение данных о кошельке API п.4.2.5
     {
         $this->basic_auth_login = $phone; //Переназначили логин
@@ -118,6 +109,7 @@ class Mserver
 		 * "data" : "phone" : "+79261111111", "amount" : 0, "name" : "Алексей Арсеньев", "verified" : false, "level" : "anonymous",
 		 * "person_status" : "data */
     }
+
     public function create_card($phone, $pass) //Метод создания карты
     {
         $json_encode = json_encode(array(
@@ -139,6 +131,7 @@ class Mserver
          */
         return $response;
    }
+
     public function card_check()//Загрузка карты карту
     {
         $headers = array();
@@ -146,7 +139,7 @@ class Mserver
         $response = $this->requestGet($this->url_card . "/" . $_SESSION["client_card_id"], array(), $headers);
         return $response; //$id, $title, $state
     }
-    //TODO создание платежа B2
+
     public function new_payment($phone) //Метод создания платежа
     {
         $json = json_encode(array(
@@ -174,7 +167,9 @@ class Mserver
         //$_SESSION["service_id"]= $service_id;//Сохраняем ID сервиса за который клиент платит
         return $response;
     }
-    //TODO Оплата и статус платежа.
+
+    //TODO создание платежа B2
+
     public function check_payment($phone, $pass) //Подтвердим согласие клиента платить и указываем страницы редиректов
 	{// для успеха/неуспеха карточного платежа.
         $json_encode = json_encode(array(
@@ -188,19 +183,37 @@ class Mserver
         $headers[] = "Authorization: Bearer {$this->access_token}";//Передаем токен(При каждом обращении к API п.3.2)
         $response = $this->requestPost($this->url_card_payments .  $_SESSION["service_id"] . "/pay", $json_encode, $headers);
         //проверить соединение ссылки и заменить сессии на переменные.
-		//($_SESSION["service_id"]  на $service_id = $response['data']['service']['id']) 
+        //($_SESSION["service_id"]  на $service_id = $response['data']['service']['id'])
         return $response;
     }
+
+    //TODO Оплата и статус платежа.
+
     public function payment_status() //Статус платежа
     {
         $headers = array();
         $headers[] = "Authorization: Bearer {$this->access_token}";//Передаем токен в хедере
         $response = $this->requestGet($this->url_card_payments . "/" .  $_SESSION["service_id"], array(), $headers);
         //проверить соединение ссылки и заменить сессии на переменные.
-		//($_SESSION["service_id"]  на $service_id = $response['data']['service']['id']) 
+        //($_SESSION["service_id"]  на $service_id = $response['data']['service']['id'])
 		//чуть не забыл что мы запрашиваем данные. Исправил  $this->requestPost на requestGet
         return $response;
     }
+
+    function __call($method = '', $arg = array())
+    {
+        switch ($method) {
+            case 'requestGet':
+                return $this->request('GET', $arg[0], $arg[1], $arg[2]);
+                break;
+            case 'requestPost':
+                return $this->request('POST', $arg[0], $arg[1], $arg[2]);
+                break;
+            default:
+                throw new Exception('Нет такого метода');
+        }
+    }
+
     public function request($method='POST',$url='', $fields = array(), $headers = array())//Метод коннекта и передачи данных curl
     {
         $headers[] = 'Accept: application/json';
@@ -238,18 +251,18 @@ B4. Запрашиваем статус платежа.
 curl -H "Authorization: Bearer 6c2ca6b0-f51d-4156-af66-c6cbe74b24a5" https://www.synq.ru/mserver2-dev/application/payments/55403
 */
     }
-    function __call($method='', $arg=array())
+
+    /* @param $response - ответ сервера
+     * @throws Exception - проверка кода ошибки
+     */
+    private function check_errors($response)
     {
-        switch($method)
-        {
-            case 'requestGet':
-                return $this->request('GET',$arg[0],$arg[1],$arg[2]);
-                break;
-            case 'requestPost':
-                return $this->request('POST',$arg[0],$arg[1],$arg[2]);
-                break;
-            default:
-                throw new Exception('Нет такого метода');
+        print_r($response);
+        if (isset($response['meta']['print_r($response);code']) && 200 != $response['meta']['code']) {//Проверяем соответсвует ли ошибка нашему списку errors_bad и ответу 200 (все ок)
+            $code = $response['meta']['code'];
+            if (isset($this->erros_bad[$code]))
+                throw new Exception($this->erros_bad[$code]);//Полученный код ошибки
+            else throw new Exception('Проблема с mserver, повторите запрос позже.');//Ошибка 5ХХ проблема с Mserver
         }
     }
 } //Конец класса

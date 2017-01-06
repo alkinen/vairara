@@ -1,25 +1,16 @@
 <?php
-
-class DB_CONFIG
-{
-    /** Имя базы данных */
-    const DB_NAME = "lessons";
-    /** Имя пользователя MySQL */
-    const DB_USER = "root";
-    /** Пароль к базе данных MySQL */
-    const DB_PASSWORD = "";
-    /** Имя сервера MySQL */
-    const DB_HOST = "localhost";
-    /** Кодировка базы данных для создания таблиц. */
-    const DB_CHARSET = "utf8";
-    /** Схема сопоставления. */
-    const DB_COLLATE = "utf8_general_ci";
-    /** Префикс таблиц в БД */
-    private $table_prefix = 'f_';
-
-}
-
-$dbconfig = new DB_CONFIG();
-
-echo $dbconfig::DB_NAME;
-echo $this->DB_NAME;
+defined('MAINPATH') OR exit('Прямой доступ к скрипту запрещен.');
+/** Имя базы данных */
+$db_name = "lessons";
+/** Имя пользователя MySQL */
+$db_user = "root";
+/** Пароль к базе данных MySQL */
+$db_password = "";
+/** Имя сервера MySQL */
+$db_host = "localhost";
+/** Кодировка базы данных для создания таблиц. */
+$db_charset = "utf8";
+/** Схема сопоставления. */
+$db_collate = "utf8_general_ci";
+/** Префикс таблиц в БД */
+$table_prefix = 'f_';

@@ -1,5 +1,5 @@
 <?php
-DEFINE('CORE_PATH', "core");
-DEFINE('%host%', "vairara");
-echo "";
-echo phpinfo();
+require(dirname(__FILE__) . '\config.php');//
+
+
+//echo phpinfo();

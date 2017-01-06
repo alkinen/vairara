@@ -1,5 +1,5 @@
 <?php
-require(dirname(__FILE__) . '\config.php');//
-
+/** Подгружаем конфиги. */
+require(dirname(__FILE__) . '/config.php');
 
 //echo phpinfo();

@@ -1,21 +1,25 @@
 <?php
-//Конфигурация подключения к Базе Данных
-define('DB_NAME', 'lessons');
-/** Имя пользователя MySQL */
-define('DB_USER', 'root');
-/** Пароль к базе данных MySQL */
-define('DB_PASSWORD', '');
-/** Имя сервера MySQL */
-define('DB_HOST', 'localhost');
-/** Кодировка базы данных для создания таблиц. */
-define('DB_CHARSET', 'utf8');
-/** Схема сопоставления. */
-define('DB_COLLATE', '');
-/** Префикс таблиц в БД */
-$table_prefix = 'f_';
 
-if (!defined('MAINPATH'))
-    define('MAINPATH', dirname(__FILE__) . '/');
+class DB_CONFIG
+{
+    /** Имя базы данных */
+    const DB_NAME = "lessons";
+    /** Имя пользователя MySQL */
+    const DB_USER = "root";
+    /** Пароль к базе данных MySQL */
+    const DB_PASSWORD = "";
+    /** Имя сервера MySQL */
+    const DB_HOST = "localhost";
+    /** Кодировка базы данных для создания таблиц. */
+    const DB_CHARSET = "utf8";
+    /** Схема сопоставления. */
+    const DB_COLLATE = "utf8_general_ci";
+    /** Префикс таблиц в БД */
+    private $table_prefix = 'f_';
 
-/** Инициализирует переменные и подключает файлы. */
-require_once(MAINPATH . 'core/load.php');
+}
+
+$dbconfig = new DB_CONFIG();
+
+echo $dbconfig::DB_NAME;
+echo $this->DB_NAME;

@@ -1,4 +1,5 @@
 <?php
 DEFINE('CORE_PATH', "core");
-echo "%host%";
+DEFINE('%host%', "vairara");
+echo "";
 echo phpinfo();

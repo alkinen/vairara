@@ -1,5 +1,5 @@
 <?php
-DEFINE(CORE_PATH, "/core/")
+DEFINE('CORE_PATH', "core");
 //%host% - Host name
 //%aliases% - Aliases name
 //%sprogdir% - OpenServer directory

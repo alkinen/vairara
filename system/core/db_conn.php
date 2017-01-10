@@ -4,8 +4,6 @@ include(MAINPATH . 'config.php');
 
 class DB_CONN
 {
-
-
     function checkDBconnection($db_host, $db_name, $db_user, $db_password, $db_charset)//Метод проверки подключения.
 {
     try {
@@ -39,7 +37,7 @@ class DB_CONN
 }
 
 
-    function createTables($db_host, $db_name, $db_user, $db_password, $db_charset)//Метод создания таблиц БД.
+    function createTables($db_host, $db_name, $db_user, $db_password, $db_charset, $table_prefix)//Метод создания таблиц БД.
 {
     try {
         //Устанавливаем подключение к БД.
@@ -47,7 +45,7 @@ class DB_CONN
         // Устанавливаем режим перехвата ошибок для PDO.
         $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         // SQL запрос для создания таблицы (users).
-        $sql = "CREATE TABLE users (
+        $sql = "CREATE TABLE $table_prefix . users (
     id INT(6) UNSIGNED AUTO_INCREMENT PRIMARY KEY, 
     login VARCHAR(30) NOT NULL UNIQUE,
     password VARCHAR(30) NOT NULL,
